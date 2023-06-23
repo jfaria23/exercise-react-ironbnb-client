@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "./ApartmentsList.css";
 
 function ApartmentsList() {
+  const [apartments, setApartments] = useState([]);
+
   useEffect(() => {
-    getApartmentsFromApi();
+    axios
+      .get(process.env.REACT_APP_API_URL + "/apartments")
+      .then((response) => {
+        setApartments(response.data);
+      })
+      .catch((e) => console.log("error getting apartments from API", e));
   }, []);
 
-  const [apartmentsArr, setApartmentsArr] = useState(null);
+  return (
+    <section className="ApartmentsList">
+      <h1>ApartmentsList</h1>
 
-  const getApartmentsFromApi = () => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/apartments`)
-      .then((response) => {
-        console.log(response);
-        setApartmentsArr(response.data[0]);
-      })
-      .catch((e) => console.log(e));
-  };
-
-  return apartmentsArr.map((apartmentObj) => {
-    return <div key={apartmentObj.id}></div>;
-  });
+      {apartments.map((element) => {
+        return (
+          <div key={element._id} className="apartment-summary">
+            <h3>{element.title}</h3>
+            <img src={element.img} alt={element.title} />
+            Price: {element.pricePerDay} <br />
+            <Link to={`/apartments/${element._id}`}>More details</Link>
+          </div>
+        );
+      })}
+    </section>
+  );
 }
 
 export default ApartmentsList;
-
-// useEffect(() => {
-//   axios.get(`${process.env.REACT_APP_API_URL}/characters/${characterId}`)
-//       .then(response => {
-//           setDetails(response.data);
-//       })
-//       .catch(e => console.log(e))
-// }, []);
