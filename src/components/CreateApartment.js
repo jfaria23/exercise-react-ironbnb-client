@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function CreateApartment() {
   const [title, setTitle] = useState("");
   const [img, setImg] = useState("");
   const [pricePerDay, setPricePerDay] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +21,7 @@ function CreateApartment() {
     axios
       .post(`${process.env.REACT_APP_API_URL}/apartments`, newApartment) // .post (url , data)
       .then((response) => {
-        console.log(response.data);
+        navigate("/");
       })
       .catch((e) => console.log("error creating apartment", e));
   };
